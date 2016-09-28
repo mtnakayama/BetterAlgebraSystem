@@ -137,20 +137,7 @@ status_t readNumber(char** refCharacter, uint8_t** refOutputTokens) {
 
 	*pOutputTokens++ = exponent;
 
-	//@TODO The padding is in the wrong order!!! It should be after the digits!
-	if(padding >= 2) {
-		*pOutputTokens++ = 0x00;
-		padding -= 2;
-	}
-	if(padding == 1) {
-		//take one number and put it to the right.
-		//The first digit should not be a decimal.
-		*pOutputTokens++ = *pNumberStart++ & 0x0F;
-		digitCount--;
-		padding--;
-	}
-
-	while(digitCount){
+	while(digitCount >= 2){
 		if(*pNumberStart == '.') {
 			pNumberStart++;
 		}
@@ -162,6 +149,17 @@ status_t readNumber(char** refCharacter, uint8_t** refOutputTokens) {
 		*pOutputTokens++ = digit;
 
 		digitCount -= 2;
+	}
+	if(digitCount /*== 1*/){
+		//last digit should not be a decimal point.
+		uint8_t digit = *pNumberStart++ << 4;
+		*pOutputTokens++ = digit;
+		padding--;
+		//digitCount--;
+	}
+	if(padding /*== 2*/){
+		*pOutputTokens++ = 0;
+		//padding -= 2;
 	}
 
 #ifdef DEBUG_READ_NUMBER_DETAILS

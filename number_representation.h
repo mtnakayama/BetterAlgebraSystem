@@ -49,7 +49,7 @@ P = precedence
 /*
  * Format: [0b1000 zzzz] [EXPONENT] ([] [] [] [])
  *
- * zzzz = size; 4 * (0bzzzz + 1) bytes
+ * zzzz = size; 2 * (0bzzzz + 1) bytes
  *
  *
  */
