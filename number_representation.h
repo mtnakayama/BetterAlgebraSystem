@@ -3,13 +3,17 @@
 #define NUMBER_REPRESENTATIONS_H_
 
 typedef uint8_t operator_token_t ;
+
+#define NULL_TOKEN			0x00
+
+
 /*
 Format: 000x xPPP
 P = precedence
 
 */
 //These are defines instead of static const, so they can be used in switch-case statements
-#define SPACE_TOKEN			0x00
+#define SPACE_TOKEN			0x01
 #define PAREN_TOKEN			0x08
 #define PAREN_CLOSE_TOKEN	0x10
 
@@ -47,7 +51,7 @@ P = precedence
 
 //SIMPLE RATIONAL
 /*
- * Format: [0b1000 zzzz] [EXPONENT] ([] [] [] [])
+ * Format: [0b1s00 zzzz] [EXPONENT] ([] [] [] [])
  *
  * zzzz = size; 2 * (0bzzzz + 1) bytes
  *
