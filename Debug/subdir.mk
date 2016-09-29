@@ -6,17 +6,20 @@
 C_SRCS += \
 ../main.c \
 ../number_representation.c \
-../parser.c 
+../parser.c \
+../print.c 
 
 OBJS += \
 ./main.o \
 ./number_representation.o \
-./parser.o 
+./parser.o \
+./print.o 
 
 C_DEPS += \
 ./main.d \
 ./number_representation.d \
-./parser.d 
+./parser.d \
+./print.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

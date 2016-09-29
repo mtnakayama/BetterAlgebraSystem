@@ -6,7 +6,6 @@ typedef uint8_t operator_token_t ;
 
 #define NULL_TOKEN			0x00
 
-
 /*
 Format: 000x xPPP
 P = precedence
@@ -51,7 +50,7 @@ P = precedence
 
 //SIMPLE RATIONAL
 /*
- * Format: [0b1s00 zzzz] [EXPONENT] ([] [] [] [])
+ * Format: [0b1000 zzzz] [EXPONENT] ([] [] [] [])
  *
  * zzzz = size; 2 * (0bzzzz + 1) bytes
  *
