@@ -19,11 +19,12 @@ status_t operatorAttributes(uint8_t token, uint8_t* precedence, bool* associativ
 status_t shuntingYard(uint8_t token, uint8_t** refOutputTokens, uint8_t** refOperatorStack, uint8_t* pOperatorStackStart);
 status_t shuntingYardParen(uint8_t** refOutputTokens, uint8_t** refOperatorStack);
 status_t shuntingYardCloseParen(uint8_t** refOutputTokens, uint8_t** refOperatorStack);
-status_t outputReversePolish(uint8_t outputTokens);
+status_t dumpOperatorStack(uint8_t** refOutputTokens, uint8_t** refOperatorStack, uint8_t* pOperatorStackStart);
 //END LOCAL FUNCTIONS
 
 status_t parseText(char* pInputText, uint8_t* pOutputTokens, uint8_t* pOperatorStack) {
 	uint8_t* pOperatorStackStart = pOperatorStack;
+	pOperatorStack--; //when we push, we increment the pointer then write the byte
 	for(char* pCharacter = pInputText; *pCharacter != '\0'; /*pCharacter++*/){
 		if((*pCharacter >= '0' && *pCharacter <= '9') || (*pCharacter == '.')) {
 			//numeral character
@@ -47,7 +48,10 @@ status_t parseText(char* pInputText, uint8_t* pOutputTokens, uint8_t* pOperatorS
 		}
 		//putchar(*character);
 	}
-	//putchar('\n');
+
+	if(dumpOperatorStack(&pOutputTokens, &pOperatorStack, pOperatorStackStart) != SUCCESS) return ERROR;
+
+	*pOutputTokens = NULL_TOKEN;
 	return SUCCESS;
 }
 
@@ -56,6 +60,9 @@ status_t parseText(char* pInputText, uint8_t* pOutputTokens, uint8_t* pOperatorS
 //#define DEBUG_READ_NUMBER_DETAILS
 #endif
 status_t readNumber(char** refCharacter, uint8_t** refOutputTokens) {
+#ifdef DEBUG
+	printf("Reading Number: ");
+#endif
 	char* pCharacter = *refCharacter;
 	char* pNumberStart;
 	uint8_t* pOutputTokens = *refOutputTokens;
@@ -100,11 +107,10 @@ status_t readNumber(char** refCharacter, uint8_t** refOutputTokens) {
 	}
 
 #ifdef DEBUG_READ_NUMBER
-	printf("Reading Number: ");
 	for(char* ch = *refCharacter; ch < pCharacter; ch++){
 		putchar(*ch);
 	}
-	putchar('\n');
+	printf("\n");
 #endif
 
 	if(digitCount == 0 && trailingZeroes) {
@@ -202,6 +208,9 @@ status_t operatorAttributes(operator_token_t token, uint8_t* pPrecedence, associ
 		*pAssociativity = ASSOCIATIVITY_LEFT;
 		break;
 	default:
+#ifdef DEBUG
+		printf("Unrecognized Operator: %02X\n", token);
+#endif
 		return ERROR;
 	}
 	return SUCCESS;
@@ -215,6 +224,9 @@ status_t operatorCharToToken(char operatorChar, operator_token_t* pToken){
 		*pToken = SUBTRACT_TOKEN;
 		break;
 	default:
+#ifdef DEBUG
+		printf("Unrecognized Operator: %c\n", operatorChar);
+#endif
 		return ERROR;
 	}
 	return SUCCESS;
@@ -228,6 +240,9 @@ status_t tokenToOperatorChar(operator_token_t token, char *pChar){
 		*pChar = '-';
 		break;
 	default:
+#ifdef DEBUG
+		printf("Unrecognized Token: %02X\n", token);
+#endif
 		return ERROR;
 	}
 	return SUCCESS;
@@ -259,7 +274,7 @@ status_t shuntingYard(uint8_t token, uint8_t** refOutputTokens, uint8_t** refOpe
 	if(operatorAttributes(token, &precedence, &associativity) != SUCCESS) return ERROR; //
 #pragma GCC diagnostic pop
 
-	while(*refOperatorStack > pOperatorStackStart) {
+	while(*refOperatorStack >= pOperatorStackStart) {
 		operator_token_t stackOperator = **refOperatorStack;
 		uint8_t stackOperatorPrecedence;
 		associativity_t stackOperatorAssoc;
@@ -278,7 +293,7 @@ status_t shuntingYard(uint8_t token, uint8_t** refOutputTokens, uint8_t** refOpe
 			break;
 		}
 	}
-	*(*refOperatorStack)++ = token;
+	*++(*refOperatorStack) = token;
 
 	return SUCCESS;
 }
@@ -291,6 +306,9 @@ status_t shuntingYardCloseParen(uint8_t** refOutputTokens, uint8_t** refOperator
 	return SUCCESS;
 }
 
-status_t outputReversePolish(uint8_t outputTokens){
+status_t dumpOperatorStack(uint8_t** refOutputTokens, uint8_t** refOperatorStack, uint8_t* pOperatorStackStart){
+	while(*refOperatorStack >= pOperatorStackStart){
+		*(*refOutputTokens)++ = *(*refOperatorStack)--;
+	}
 	return SUCCESS;
 }
