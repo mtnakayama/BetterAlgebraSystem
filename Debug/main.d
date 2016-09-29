@@ -1,7 +1,10 @@
-main.o: ../main.c ../number_representation.h ../parser.h ../error.h
+main.o: ../main.c ../number_representation.h ../print.h ../error.h \
+ ../parser.h
 
 ../number_representation.h:
 
-../parser.h:
+../print.h:
 
 ../error.h:
+
+../parser.h:

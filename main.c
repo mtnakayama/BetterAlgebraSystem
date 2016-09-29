@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "number_representation.h"
+#include "print.h"
 #include "parser.h"
 #include "error.h"
 
@@ -22,7 +23,11 @@ int main(){
 		*/
 
 		gets(pInputBuffer);
-		if(parseText(pInputBuffer, pTokenBuffer, pOperatorStack) != SUCCESS){
+		if(parseText(pInputBuffer, pTokenBuffer, pOperatorStack) == SUCCESS){
+			if(printBuffer(pTokenBuffer) != SUCCESS) {
+				printf("Printing Error!\n");
+			}
+		} else {
 			printf("Parsing error!\n");
 		}
 		//puts(inputBuffer);

@@ -25,26 +25,22 @@ status_t dumpOperatorStack(uint8_t** refOutputTokens, uint8_t** refOperatorStack
 status_t parseText(char* pInputText, uint8_t* pOutputTokens, uint8_t* pOperatorStack) {
 	uint8_t* pOperatorStackStart = pOperatorStack;
 	pOperatorStack--; //when we push, we increment the pointer then write the byte
-	for(char* pCharacter = pInputText; *pCharacter != '\0'; /*pCharacter++*/){
+	for(char* pCharacter = pInputText; *pCharacter != '\0'; pCharacter++){
 		if((*pCharacter >= '0' && *pCharacter <= '9') || (*pCharacter == '.')) {
 			//numeral character
 			//isNumber = true;
 			if(readNumber(&pCharacter, &pOutputTokens) != SUCCESS) return ERROR;
 		} else if(*pCharacter == '+') {
-			if(readOperator(&pCharacter, &pOutputTokens, &pOperatorStack, pOperatorStackStart) != SUCCESS) return ERROR;
+			if(shuntingYard(ADD_TOKEN, &pOutputTokens, &pOperatorStack, pOperatorStackStart) != SUCCESS) return ERROR;
 		} else if(*pCharacter == '(') {
-			pCharacter++;
 			if(shuntingYardParen(&pOutputTokens, &pOperatorStack) != SUCCESS) return ERROR;
 		} else if(*pCharacter == ')') {
-			pCharacter++;
 			if(shuntingYardCloseParen(&pOutputTokens, &pOperatorStack) != SUCCESS) return ERROR;
 #ifdef DEBUG
 		} else if(*pCharacter == '\r') {//ignore carriage return
-			pCharacter++;
 			continue;
 #endif
 		} else {
-			pCharacter++;
 		}
 		//putchar(*character);
 	}
@@ -180,7 +176,7 @@ status_t readNumber(char** refCharacter, uint8_t** refOutputTokens) {
 	printf("\n\n");
 #endif
 
-	*refCharacter = pCharacter;
+	*refCharacter = pCharacter - 1;
 	*refOutputTokens = pOutputTokens;
 	return SUCCESS;
 }
