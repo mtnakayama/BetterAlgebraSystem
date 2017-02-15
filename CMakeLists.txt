@@ -16,7 +16,12 @@ macro(use_c99)
 endmacro(use_c99)
 
 file(GLOB Sources "src/*.c")
-message(STATUS: "Source Paths: " ${Sources})
+message("Source Paths: " ${Sources})
+
+file(GLOB TestSources "src/*.c" "tests/*.c")
+list(REMOVE_ITEM TestSources "${CMAKE_SOURCE_DIR}/src/main.c")
+message("${CMAKE_SOURCE_DIR}/src/main.c")
+message("Test Source Paths: " ${TestSources})
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -24,4 +29,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
 add_executable(bas ${Sources})
+add_executable(testexe ${TestSources})
 use_c99()
+enable_testing()
+add_test(NAME Test COMMAND testexe)
+add_custom_target(test-verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
