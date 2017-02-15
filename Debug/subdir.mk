@@ -4,18 +4,24 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../addition.c \
+../calculate.c \
 ../main.c \
 ../number_representation.c \
 ../parser.c \
 ../print.c 
 
 OBJS += \
+./addition.o \
+./calculate.o \
 ./main.o \
 ./number_representation.o \
 ./parser.o \
 ./print.o 
 
 C_DEPS += \
+./addition.d \
+./calculate.d \
 ./main.d \
 ./number_representation.d \
 ./parser.d \

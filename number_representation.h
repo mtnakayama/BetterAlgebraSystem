@@ -2,6 +2,13 @@
 #ifndef NUMBER_REPRESENTATIONS_H_
 #define NUMBER_REPRESENTATIONS_H_
 
+#include <stdbool.h>
+#include <stdint.h>
+
+bool isOperatorToken(uint8_t token);
+bool isSimpleRational(uint8_t token);
+uint8_t sizeofSimpleRational(uint8_t token);
+
 typedef uint8_t operator_token_t ;
 
 #define NULL_TOKEN			0x00

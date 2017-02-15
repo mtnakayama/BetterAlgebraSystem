@@ -18,7 +18,7 @@ status_t printBuffer(uint8_t* pBuffer) {
 #ifdef DEBUG
 	//output to stdio.h
 	while(*pBuffer != NULL_TOKEN) {
-		if((*pBuffer & 0xB0) == 0x80) {
+		if(isSimpleRational(*pBuffer)) {
 			//print simple rational number;
 			uint8_t size = ((*pBuffer++ & 0x0F) + 1) * 2;
 
@@ -35,7 +35,7 @@ status_t printBuffer(uint8_t* pBuffer) {
 			} while (size != 0);
 
 			printf("*10^%d", exponent);
-		} else if((*pBuffer & 0xE0) == 0x00){
+		} else if(isOperatorToken(*pBuffer)){
 			char operator;
 			if(tokenToOperatorChar(*pBuffer++, &operator) != SUCCESS) return ERROR;
 			putchar(operator);
