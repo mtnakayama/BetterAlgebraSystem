@@ -10,6 +10,7 @@
 #define TOKEN_STACK_SIZE 256
 
 int main(){
+	printf("BetterAlgebraSystem\n");
 	while(1){
 		char pInputBuffer[INPUT_BUFFER_SIZE];
 		uint8_t pTokenBuffer[INPUT_BUFFER_SIZE];
