@@ -14,23 +14,30 @@ macro(use_c99)
     set (CMAKE_C_STANDARD 99)
   endif ()
 endmacro(use_c99)
+use_c99()
 
 file(GLOB Sources "src/*.c")
 message("Source Paths: " ${Sources})
 
 file(GLOB TestSources "src/*.c" "tests/*.c")
+file(GLOB TestHeaders "src/*.h")
 list(REMOVE_ITEM TestSources "${CMAKE_SOURCE_DIR}/src/main.c")
-message("${CMAKE_SOURCE_DIR}/src/main.c")
+message("Excluding from testexe: " "${CMAKE_SOURCE_DIR}/src/main.c")
 message("Test Source Paths: " ${TestSources})
+#message("Test Header Paths: " ${TestHeaders})
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
+
 add_executable(bas ${Sources})
 add_executable(testexe ${TestSources})
-use_c99()
+target_include_directories(testexe PRIVATE "${CMAKE_SOURCE_DIR}/src/")
+target_compile_definitions(testexe PRIVATE TEST=1)
+
 enable_testing()
 add_test(NAME Test COMMAND testexe)
+
 add_custom_target(test-verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
